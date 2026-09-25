@@ -1,0 +1,19 @@
+body {
+    background: radial-gradient(circle at 50% 50%, #0a0f14, #05070a 60%);
+    overflow: hidden;
+}
+
+.cosmic-flow {
+    position: fixed;
+    inset: 0;
+    background: url('nebula.png');
+    background-size: cover;
+    opacity: 0.15;
+    animation: flow 40s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes flow {
+    0% { transform: scale(1) translateX(0); }
+    100% { transform: scale(1.2) translateX(-5%); }
+}
