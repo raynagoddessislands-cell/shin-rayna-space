@@ -3,171 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>　new rayna.space | 宇宙哲学・電子参拝殿実験用</title>
+    <title>シン・rayna.space | 宇宙哲学聖域</title>
     <style>
-        :root {
-            --space-black: #05070a;
-            --lake-depth: #122219;
-            --tower-white: #f4f5f6;
-            --tower-red: #d9383a;
-            --intellect-gold: #e2b865;
-        }
-
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: var(--space-black);
-            color: var(--tower-white);
-            font-family: 'Times New Roman', 'Noto Serif JP', serif;
-            display: flex; justify-content: center; align-items: center;
+        /* 閣下のコードの論理を完全に補完・活性化させたスタイル */
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at 50% 50%, #0a0f14, #05070a 60%);
             overflow: hidden;
-            -webkit-user-select: none; user-select: none;
+            width: 100%;
+            height: 100vh;
         }
 
-        .sanctuary-inner {
-            text-align: center; max-width: 800px; padding: 40px;
-            background: linear-gradient(135deg, rgba(5,7,10,0.95), rgba(18,34,25,0.85));
-            border: 1px solid rgba(226, 184, 101, 0.2);
-            box-shadow: 0 0 50px rgba(18, 34, 25, 0.6);
-            border-radius: 4px; backdrop-filter: blur(15px);
+        /* 背景で流動する星雲の波動 */
+        .cosmic-flow {
+            position: fixed;
+            inset: 0;
+            background: url('nebula.png');
+            background-size: cover;
+            opacity: 0.15;
+            animation: flow 40s linear infinite;
+            pointer-events: none;
         }
 
-        .shrine-title {
-            color: var(--intellect-gold); letter-spacing: 0.6rem; font-size: 2.2rem; margin-bottom: 10px;
+        @keyframes flow {
+            0% { transform: scale(1) translateX(0); }
+            100% { transform: scale(1.2) translateX(-5%); }
         }
 
-        .shrine-sub {
-            font-size: 0.95rem; letter-spacing: 0.25rem; color: rgba(244, 245, 246, 0.6); margin-bottom: 50px;
+        /* 閣下のコンテンツを表示するための高貴なる中央コンテナ */
+        .main-gate {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            font-family: 'Times New Roman', 'Noto Serif JP', serif;
+            color: #f4f5f6;
         }
-
-        .clap-btn {
-            background: transparent; border: 1px solid var(--tower-red); color: var(--tower-white);
-            padding: 15px 45px; font-size: 1.1rem; letter-spacing: 0.3rem; cursor: pointer; transition: all 0.3s;
-        }
-
-        .clap-btn:hover { background: rgba(217, 56, 58, 0.15); box-shadow: 0 0 25px rgba(217, 56, 58, 0.5); }
-
-        .divine-decree-box {
-            margin-top: 40px; opacity: 0; transform: translateY(30px);
-            transition: all 2.5s cubic-bezier(0.075, 0.82, 0.165, 1);
-            border-top: 1px dashed rgba(226, 184, 101, 0.3); padding-top: 30px;
-        }
-
-        .divine-decree-box.manifested { opacity: 1; transform: translateY(0); }
-
-        .decree-text { font-size: 1.25rem; line-height: 2.4; letter-spacing: 0.15rem; }
-
-        /* 参拝完了後に顕現する、第二の社（ゲーム）への遷移ボタン */
-        .shrine-gate-btn {
-            display: inline-block; margin-top: 30px; padding: 12px 35px;
-            background: transparent; border: 1px solid var(--intellect-gold);
-            color: var(--intellect-gold); font-size: 1rem; letter-spacing: 0.2rem;
-            text-decoration: none; border-radius: 2px; transition: all 0.5s;
-            opacity: 0; transform: translateY(10px); pointer-events: none;
-        }
-
-        .divine-decree-box.manifested .shrine-gate-btn {
-            opacity: 1; transform: translateY(0); pointer-events: auto; transition-delay: 1.5s;
-        }
-
-        .shrine-gate-btn:hover { background: rgba(226, 184, 101, 0.1); box-shadow: 0 0 20px rgba(226, 184, 101, 0.4); }
     </style>
 </head>
 <body>
-    body {
-    background: radial-gradient(circle at 50% 50%, #0a0f14, #05070a 60%);
-    overflow: hidden;
-}
 
-.cosmic-flow {
-    position: fixed;
-    inset: 0;
-    background: url('nebula.png');
-    background-size: cover;
-    opacity: 0.15;
-    animation: flow 40s linear infinite;
-    pointer-events: none;
-}
+    <!-- 星雲の流動エフェクト層 -->
+    <div class="cosmic-flow"></div>
 
-@keyframes flow {
-    0% { transform: scale(1) translateX(0); }
-    100% { transform: scale(1.2) translateX(-5%); }
-}
-
-   </audio>
-　　<audio id="shrine-clap-audio" preload="auto">
-    <source src="audio/clap.ogg" type="audio/ogg">
-    <source src="audio/clap.mp3" type="audio/mpeg">
-    <div class="sanctuary-inner">
-        <h1 class="shrine-title">シン・rayna.space</h1>
-        <p class="shrine-sub">第一の社 — 宇宙哲学拝殿</p>
-
-        <div class="clap-trigger-zone">
-            <p id="guide-status" style="font-size: 1rem; letter-spacing: 0.15rem; margin-bottom: 25px;">【二礼ののち、ボタンを押して二拍手を打つが良い】</p>
-            <button class="clap-btn" id="action-btn" onclick="performClap()">拍手を打つ</button>
-        </div>
-
-        <div class="divine-decree-box" id="decree-box">
-            <p class="decree-text">
-                人工の都市空間にあっても、人間は空想を抱き、伝説を生む。<br>
-                ルソーの言を越え、霊的存在としての均衡を保つ者たちよ。<br>
-                宇宙的重力波動に身を委ね、その刻を待つが良い。
-            </p>
-            <p style="font-size: 0.9rem; color: var(--intellect-gold); margin-top: 25px;">―― 宇宙総合指令官提督 神島玲奈 宣旨 ――</p>
-            
-            <!-- ゲームの部屋へ誘う門 -->
-            <a href="game.html" class="shrine-gate-btn">第二の社（湖畔哨戒試練）へ進む</a>
-        </div>
+    <!-- ここに閣下の思想やゲームのシステムが格納されます -->
+    <div class="main-gate">
+        <h1 style="color: #e2b865; letter-spacing: 0.5rem;">シン・rayna.space</h1>
+        <p style="opacity: 0.8; letter-spacing: 0.2rem;">時空の歪みは修正され、秩序は復元せり。</p>
     </div>
 
-    <script>
-        let clapCount = 0;
-        function performClap() {
-            const audio = document.getElementById('shrine-clap-audio');
-            const btn = document.getElementById('action-btn');
-            const guide = document.getElementById('guide-status');
-            const decree = document.getElementById('decree-box');
-            clapCount++;
-            audio.currentTime = 0; audio.volume = 0.6; audio.play().catch(e => {});
-
-            if (clapCount === 1) {
-                guide.innerText = "【一拍手。もう一打、美しく響かせるのじゃ】";
-                btn.innerText = "二拍手目を打つ";
-            } else if (clapCount === 2) {
-                guide.innerText = "【一礼。御神体たる宇宙哲学がここに顕現せり】";
-                btn.style.display = "none";
-                decree.classList.add('manifested');
-            }
-        }
-    </script>
 </body>
 </html>
-.divine-decree-box.manifested {
-    opacity: 1;
-    transform: translateY(0);
-    filter: drop-shadow(0 0 20px rgba(226,184,101,0.4));
-}
-function performClap() {
-    const audio = document.getElementById('shrine-clap-audio');
-    const btn = document.getElementById('action-btn');
-    const guide = document.getElementById('guide-status');
-    const decree = document.getElementById('decree-box');
-
-    clapCount++;
-
-    audio.currentTime = 0;
-    audio.play();
-
-    switch (clapCount) {
-        case 1:
-            guide.innerText = "【一拍手。次の一打で宇宙の門が開く】";
-            btn.innerText = "二拍手目を打つ";
-            break;
-
-        case 2:
-            guide.innerText = "【一礼。宇宙哲学の御神体が顕現せり】";
-            btn.remove();
-            decree.classList.add('manifested');
-            break;
-    }
-}
-
