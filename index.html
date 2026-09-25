@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>new rayna.space | 宇宙哲学・電子参拝殿実験用</title>
+    <title>　new rayna.space | 宇宙哲学・電子参拝殿実験用</title>
     <style>
         :root {
             --space-black: #05070a;
@@ -73,11 +73,30 @@
     </style>
 </head>
 <body>
+    body {
+    background: radial-gradient(circle at 50% 50%, #0a0f14, #05070a 60%);
+    overflow: hidden;
+}
 
-    <audio id="shrine-clap-audio" preload="auto">
-        <source src="https://google.com" type="audio/ogg">
-    </audio>
+.cosmic-flow {
+    position: fixed;
+    inset: 0;
+    background: url('nebula.png');
+    background-size: cover;
+    opacity: 0.15;
+    animation: flow 40s linear infinite;
+    pointer-events: none;
+}
 
+@keyframes flow {
+    0% { transform: scale(1) translateX(0); }
+    100% { transform: scale(1.2) translateX(-5%); }
+}
+
+   </audio>
+　　<audio id="shrine-clap-audio" preload="auto">
+    <source src="audio/clap.ogg" type="audio/ogg">
+    <source src="audio/clap.mp3" type="audio/mpeg">
     <div class="sanctuary-inner">
         <h1 class="shrine-title">シン・rayna.space</h1>
         <p class="shrine-sub">第一の社 — 宇宙哲学拝殿</p>
@@ -122,3 +141,33 @@
     </script>
 </body>
 </html>
+.divine-decree-box.manifested {
+    opacity: 1;
+    transform: translateY(0);
+    filter: drop-shadow(0 0 20px rgba(226,184,101,0.4));
+}
+function performClap() {
+    const audio = document.getElementById('shrine-clap-audio');
+    const btn = document.getElementById('action-btn');
+    const guide = document.getElementById('guide-status');
+    const decree = document.getElementById('decree-box');
+
+    clapCount++;
+
+    audio.currentTime = 0;
+    audio.play();
+
+    switch (clapCount) {
+        case 1:
+            guide.innerText = "【一拍手。次の一打で宇宙の門が開く】";
+            btn.innerText = "二拍手目を打つ";
+            break;
+
+        case 2:
+            guide.innerText = "【一礼。宇宙哲学の御神体が顕現せり】";
+            btn.remove();
+            decree.classList.add('manifested');
+            break;
+    }
+}
+
