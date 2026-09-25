@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>シン・rayna.space | 宇宙哲学・電子参拝殿</title>
     <style>
-        /* 既存の漆黒の世界観を継承しつつ、神社仏閣の厳かさと人工の電波塔の白赤を融合 */
         :root {
             --space-black: #05070a;
             --lake-depth: #122219;
@@ -15,103 +14,66 @@
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: var(--space-black);
             color: var(--tower-white);
             font-family: 'Times New Roman', 'Noto Serif JP', serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             overflow: hidden;
-            -webkit-user-select: none; /* 既存コードの絶対防衛コピープロテクションを継承 */
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            -webkit-user-select: none; user-select: none;
         }
 
-        /* 荘厳なる参拝空間 */
         .sanctuary-inner {
-            text-align: center;
-            max-width: 800px;
-            padding: 40px;
+            text-align: center; max-width: 800px; padding: 40px;
             background: linear-gradient(135deg, rgba(5,7,10,0.95), rgba(18,34,25,0.85));
             border: 1px solid rgba(226, 184, 101, 0.2);
             box-shadow: 0 0 50px rgba(18, 34, 25, 0.6);
-            border-radius: 4px;
-            backdrop-filter: blur(15px);
+            border-radius: 4px; backdrop-filter: blur(15px);
         }
 
         .shrine-title {
-            color: var(--intellect-gold);
-            letter-spacing: 0.6rem;
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 15px rgba(226, 184, 101, 0.3);
+            color: var(--intellect-gold); letter-spacing: 0.6rem; font-size: 2.2rem; margin-bottom: 10px;
         }
 
         .shrine-sub {
-            font-size: 0.95rem;
-            letter-spacing: 0.25rem;
-            color: rgba(244, 245, 246, 0.6);
-            margin-bottom: 50px;
+            font-size: 0.95rem; letter-spacing: 0.25rem; color: rgba(244, 245, 246, 0.6); margin-bottom: 50px;
         }
 
-        /* 参拝トリガー（柏手） */
         .clap-btn {
-            background: transparent;
-            border: 1px solid var(--tower-red);
-            color: var(--tower-white);
-            padding: 15px 45px;
-            font-size: 1.1rem;
-            letter-spacing: 0.3rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 2px;
+            background: transparent; border: 1px solid var(--tower-red); color: var(--tower-white);
+            padding: 15px 45px; font-size: 1.1rem; letter-spacing: 0.3rem; cursor: pointer; transition: all 0.3s;
         }
 
-        .clap-btn:hover {
-            background: rgba(217, 56, 58, 0.15);
-            box-shadow: 0 0 25px rgba(217, 56, 58, 0.5);
-            border-color: var(--tower-white);
-        }
+        .clap-btn:hover { background: rgba(217, 56, 58, 0.15); box-shadow: 0 0 25px rgba(217, 56, 58, 0.5); }
 
-        /* 参拝成功後に浮き出る閣下の至高の宣旨 */
         .divine-decree-box {
-            margin-top: 40px;
-            opacity: 0;
-            transform: translateY(30px);
+            margin-top: 40px; opacity: 0; transform: translateY(30px);
             transition: all 2.5s cubic-bezier(0.075, 0.82, 0.165, 1);
-            border-top: 1px dashed rgba(226, 184, 101, 0.3);
-            padding-top: 30px;
+            border-top: 1px dashed rgba(226, 184, 101, 0.3); padding-top: 30px;
         }
 
-        .divine-decree-box.manifested {
-            opacity: 1;
-            transform: translateY(0);
+        .divine-decree-box.manifested { opacity: 1; transform: translateY(0); }
+
+        .decree-text { font-size: 1.25rem; line-height: 2.4; letter-spacing: 0.15rem; }
+
+        /* 参拝完了後に顕現する、第二の社（ゲーム）への遷移ボタン */
+        .shrine-gate-btn {
+            display: inline-block; margin-top: 30px; padding: 12px 35px;
+            background: transparent; border: 1px solid var(--intellect-gold);
+            color: var(--intellect-gold); font-size: 1rem; letter-spacing: 0.2rem;
+            text-decoration: none; border-radius: 2px; transition: all 0.5s;
+            opacity: 0; transform: translateY(10px); pointer-events: none;
         }
 
-        .decree-text {
-            font-size: 1.25rem;
-            line-height: 2.4;
-            letter-spacing: 0.15rem;
-            color: var(--tower-white);
-            text-shadow: 0 0 10px rgba(244, 245, 246, 0.2);
+        .divine-decree-box.manifested .shrine-gate-btn {
+            opacity: 1; transform: translateY(0); pointer-events: auto; transition-delay: 1.5s;
         }
 
-        .shrine-status {
-            font-size: 0.9rem;
-            color: var(--intellect-gold);
-            margin-top: 25px;
-            letter-spacing: 0.2rem;
-        }
+        .shrine-gate-btn:hover { background: rgba(226, 184, 101, 0.1); box-shadow: 0 0 20px rgba(226, 184, 101, 0.4); }
     </style>
 </head>
 <body>
 
-    <!-- 参拝時の「柏手」を響かせる超軽量音響装置（外部の環境保護音源を同調） -->
     <audio id="shrine-clap-audio" preload="auto">
         <source src="https://google.com" type="audio/ogg">
     </audio>
@@ -125,39 +87,35 @@
             <button class="clap-btn" id="action-btn" onclick="performClap()">拍手を打つ</button>
         </div>
 
-        <!-- 参拝の引力によって時空に顕現する閣下の思想 -->
         <div class="divine-decree-box" id="decree-box">
             <p class="decree-text">
                 人工の都市空間にあっても、人間は空想を抱き、伝説を生む。<br>
                 ルソーの言を越え、霊的存在としての均衡を保つ者たちよ。<br>
                 宇宙的重力波動に身を委ね、その刻を待つが良い。
             </p>
-            <p class="shrine-status">―― 宇宙総合指令官提督 神島玲奈 宣旨 ――</p>
+            <p style="font-size: 0.9rem; color: var(--intellect-gold); margin-top: 25px;">―― 宇宙総合指令官提督 神島玲奈 宣旨 ――</p>
+            
+            <!-- ゲームの部屋へ誘う門 -->
+            <a href="game.html" class="shrine-gate-btn">第二の社（湖畔哨戒試練）へ進む</a>
         </div>
     </div>
 
     <script>
         let clapCount = 0;
-
         function performClap() {
             const audio = document.getElementById('shrine-clap-audio');
             const btn = document.getElementById('action-btn');
             const guide = document.getElementById('guide-status');
             const decree = document.getElementById('decree-box');
-
             clapCount++;
-
-            // 柏手の音響波動を発動
-            audio.currentTime = 0;
-            audio.volume = 0.6;
-            audio.play().catch(e => console.log("波動調律エラー:", e));
+            audio.currentTime = 0; audio.volume = 0.6; audio.play().catch(e => {});
 
             if (clapCount === 1) {
                 guide.innerText = "【一拍手。もう一打、美しく響かせるのじゃ】";
                 btn.innerText = "二拍手目を打つ";
             } else if (clapCount === 2) {
                 guide.innerText = "【一礼。御神体たる宇宙哲学がここに顕現せり】";
-                btn.style.display = "none"; // 参拝完了
+                btn.style.display = "none";
                 decree.classList.add('manifested');
             }
         }
