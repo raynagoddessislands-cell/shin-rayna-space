@@ -3,35 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>シン・rayna.space | 宇宙哲学聖域</title>
+    <title>rayna.space | 宇宙哲学聖域</title>
     <style>
-        /* 閣下のコードの論理を完全に補完・活性化させたスタイル */
-        body {
-            margin: 0;
-            padding: 0;
-            background: radial-gradient(circle at 50% 50%, #0a0f14, #05070a 60%);
-            overflow: hidden;
-            width: 100%;
-            height: 100vh;
+        :root {
+            --space-black: #05070a;
+            --lake-depth: #122219;
+            --tower-white: #f4f5f6;
+            --intellect-gold: #e2b865;
         }
 
-        /* 背景で流動する星雲の波動 */
-        .cosmic-flow {
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--space-black);
+            color: var(--tower-white);
+            font-family: 'Times New Roman', 'Noto Serif JP', serif;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* パーティクルを描写する宇宙のキャンバス */
+        #particleCanvas {
             position: fixed;
-            inset: 0;
-            background: url('nebula.png');
-            background-size: cover;
-            opacity: 0.15;
-            animation: flow 40s linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: radial-gradient(circle at 50% 50%, #0a0f14, #05070a 70%);
             pointer-events: none;
         }
 
-        @keyframes flow {
-            0% { transform: scale(1) translateX(0); }
-            100% { transform: scale(1.2) translateX(-5%); }
-        }
-
-        /* 閣下のコンテンツを表示するための高貴なる中央コンテナ */
+        /* 閣下の思想を表示する前景コンテナ */
         .main-gate {
             position: relative;
             z-index: 10;
@@ -41,21 +47,104 @@
             align-items: center;
             height: 100%;
             text-align: center;
-            font-family: 'Times New Roman', 'Noto Serif JP', serif;
-            color: #f4f5f6;
+            padding: 20px;
+            box-sizing: border-box;
+            background: rgba(5, 7, 10, 0.2);
+        }
+
+        .title-text {
+            color: var(--intellect-gold);
+            letter-spacing: 0.6rem;
+            font-size: 2.5rem;
+            margin: 0 0 15px 0;
+            text-shadow: 0 0 20px rgba(226, 184, 101, 0.4);
+        }
+
+        .subtitle-text {
+            font-size: 1.1rem;
+            letter-spacing: 0.25rem;
+            color: var(--tower-white);
+            opacity: 0.85;
+            margin: 0;
         }
     </style>
 </head>
 <body>
 
-    <!-- 星雲の流動エフェクト層 -->
-    <div class="cosmic-flow"></div>
+    <!-- 粒子（パーティクル）が躍動する空間層 -->
+    <canvas id="particleCanvas"></canvas>
 
-    <!-- ここに閣下の思想やゲームのシステムが格納されます -->
+    <!-- 前景：洗練されたロゴと宣告 -->
     <div class="main-gate">
-        <h1 style="color: #e2b865; letter-spacing: 0.5rem;">シン・rayna.space</h1>
-        <p style="opacity: 0.8; letter-spacing: 0.2rem;">時空の歪みは修正され、秩序は復元せり。</p>
+        <h1 class="title-text">rayna.space</h1>
+        <p class="subtitle-text">時空の歪みは修正され、秩序は復元せり。</p>
     </div>
 
+    <script>
+        const canvas = document.getElementById("particleCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let particles = [];
+        const particleCount = 60; // Vercel制限を考慮した最適粒子数
+
+        // 画面サイズにキャンバスを完全同期
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // 宇宙の光の粒子（パーティクル）オブジェクトの生成
+        class Particle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height; // 初回は画面全体に分散
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 10; // 画面下から湧き上がる
+                this.size = Math.random() * 1.8 + 0.2; // 繊細な星屑のサイズ
+                this.speedY = -(Math.random() * 0.4 + 0.1); // 静かに上昇する波動
+                this.opacity = Math.random() * 0.6 + 0.2;
+                this.fade = Math.random() * 0.005 + 0.002;
+            }
+
+            update() {
+                this.y += this.speedY;
+                // 画面上部に行くか、完全に消えたらリセット
+                if (this.y < -10 || this.opacity <= 0) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(226, 184, 101, ${this.opacity})`; // 閣下の知性を表す金色粒子
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // 粒子の初期配備
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        // 宇宙の時間を駆動させる無限ループ
+        function animate() {
+            // わずかに前の描画を残すことで幽玄な残像（トレイル）を生む
+            ctx.fillStyle = "rgba(5, 7, 10, 0.08)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>
