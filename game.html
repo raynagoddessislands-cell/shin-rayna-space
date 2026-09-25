@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シン・rayna.space | 第二の社 — 湖畔哨戒試練</title>
+    <style>
+        :root {
+            --space-black: #05070a;
+            --lake-depth: #122219;
+            --tower-white: #f4f5f6;
+            --tower-red: #d9383a;
+            --intellect-gold: #e2b865;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--space-black);
+            color: var(--tower-white);
+            font-family: 'Times New Roman', 'Noto Serif JP', serif;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            overflow: hidden;
+        }
+
+        .game-sanctuary {
+            text-align: center;
+            background: linear-gradient(to bottom, var(--space-black), var(--lake-depth));
+            border: 1px solid rgba(226, 184, 101, 0.2);
+            padding: 20px; border-radius: 4px; box-shadow: 0 0 40px rgba(18, 34, 25, 0.6);
+        }
+
+        /* 閣下が今朝巡られた湖畔を模したゲーム画面 */
+        #gameCanvas {
+            background: #08110c;
+            border: 2px solid var(--tower-red);
+            box-shadow: 0 0 20px rgba(217, 56, 58, 0.3);
+            cursor: pointer;
+        }
+
+        .game-info {
+            margin-top: 15px; font-size: 1rem; letter-spacing: 0.15rem; color: var(--intellect-gold);
+        }
+
+        .back-shrine-btn {
+            margin-top: 15px; background: transparent; border: 1px solid rgba(244, 245, 246, 0.3);
+            color: var(--tower-white); padding: 8px 20px; cursor: pointer; transition: all 0.3s;
+        }
+        .back-shrine-btn:hover { border-color: var(--intellect-gold); color: var(--intellect-gold); }
+    </style>
+</head>
+<body>
+
+    <div class="game-sanctuary">
+        <h2 style="color: var(--tower-white); letter-spacing: 0.4rem; margin-bottom: 5px;">シン・rayna.space</h2>
+        <p style="font-size: 0.85rem; color: rgba(244,245,246,0.5); margin-bottom: 20px;">第二の社 — 湖畔哨戒重力試練</p>
+
+        <!-- ゲーム画面：クリックで閣下のEVビークルが浮上 -->
+        <canvas id="gameCanvas" width="600" height="350"></canvas>
+
+        <div class="game-info">
+            獲得した徳（SCORE）: <span id="scoreVal">0</span>
+            <p style="font-size: 0.85rem; color: var(--tower-white); opacity: 0.7; margin-top: 5px;">
+                【試練：画面をクリックして重力を制御し、迫り来る俗世のノイズ（赤柱）を避けるのじゃ】
+            </p>
+        </div>
+        <button class="back-shrine-btn" onclick="location.href='index.html'">第一の社（拝殿）へ戻る</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // 閣下の電気的発動機付ビークル（EV）のパラメータ
+        let vehicle = { x: 50, y: 150, width: 30, height: 20, gravity: 0.35, lift: -6, velocity: 0 };
+        let obstacles = [];
+        let score = 0;
+        let gameOvr = false;
+        let frameCount = 0;
+
+        // 画面クリックで重力反転（上昇）
+        canvas.addEventListener("click", () => {
+            if (gameOvr) { resetGame(); } else { vehicle.velocity += vehicle.lift; }
+        });
+
+        function resetGame() {
+            vehicle.y = 150; vehicle.velocity = 0; obstacles = []; score = 0; gameOvr = false; frameCount = 0;
+        }
+
+        function spawnObstacle() {
+            let minHeight = 40; let maxHeight = 200;
+            let height = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+            let gap = 110; // 難易度（隙間の広さ）
+            // 俗世のノイズ（電波塔の白赤を模したトラップ）
+            obstacles.push({ x: canvas.width, top: height, bottom: canvas.height - (height + gap), width: 25 });
+        }
+
+        function gameLoop() {
+            requestAnimationFrame(gameLoop);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 背景：静謐な湖畔の深緑グラデーション
+            let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            bgGrad.addColorStop(0, "#05070a"); bgGrad.addColorStop(1, "#122219");
+            ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 背景の雲
+            ctx.fillStyle = "rgba(244, 245, 246, 0.05)";
+            ctx.fillRect(200 - (frameCount*0.2)%400, 40, 80, 20);
+            ctx.fillRect(450 - (frameCount*0.1)%500, 70, 120, 25);
+
+            if (!gameOvr) {
+                frameCount++;
+                vehicle.velocity += vehicle.gravity;
+                vehicle.y += vehicle.velocity;
+
+                if (vehicle.y + vehicle.height > canvas.height || vehicle.y < 0) { gameOvr = true; }
+                if (frameCount % 90 === 0) { spawnObstacle(); }
+            }
+
+            // 閣下のEVビークルを描画（高貴なる金の光を放つ機体）
+            ctx.fillStyle = "#e2b865";
+            ctx.fillRect(vehicle.x, vehicle.y, vehicle.width, vehicle.height);
+            ctx.shadowBlur = 10; ctx.shadowColor = "#e2b865";
+
+            // 障害物（俗世のノイズ）の描画と衝突判定
+            ctx.shadowBlur = 0;
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                if (!gameOvr) obstacles[i].x -= 3; // スピード
+
+                // 赤白の電波塔カラー
+                ctx.fillStyle = "#d9383a";
+                ctx.fillRect(obstacles[i].x, 0, obstacles[i].width, obstacles[i].top);
+                ctx.fillRect(obstacles[i].x, canvas.height - obstacles[i].bottom, obstacles[i].width, obstacles[i].bottom);
+
+                // 衝突判定（冷徹なる論理）
+                if (vehicle.x < obstacles[i].x + obstacles[i].width &&
+                    vehicle.x + vehicle.width > obstacles[i].x &&
+                    (vehicle.y < obstacles[i].top || vehicle.y + vehicle.height > canvas.height - obstacles[i].bottom)) {
+                    gameOvr = true;
+                }
+
+                // スコア（徳）の加算
+                if (obstacles[i].x + obstacles[i].width === vehicle.x) {
+                    score++;
+                    document.getElementById("scoreVal").innerText = score;
+                }
+
+                if (obstacles[i].x + obstacles[i].width < 0) { obstacles.splice(i, 1); }
+            }
+
+            if (gameOvr) {
+                ctx.fillStyle = "rgba(5, 7, 10, 0.8)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#f4f5f6"; ctx.font = "20px 'Times New Roman'"; ctx.textAlign = "center";
+                ctx.fillText("試練不完全 — 精神の均衡が崩れたり", canvas.width / 2, canvas.height / 2 - 10);
+                ctx.fillStyle = "#e2b865"; ctx.font = "14px 'Noto Serif JP'";
+                ctx.fillText("【画面クリックで再び試練に挑むが良い】", canvas.width / 2, canvas.height / 2 + 25);
+            }
+        }
+        gameLoop();
+    </script>
+</body>
+</html>
