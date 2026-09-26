@@ -6,142 +6,153 @@
     <title>rayna.space | 宇宙哲学聖域</title>
     <style>
         :root {
-            --space-black: #05070a;
-            --lake-depth: #122219;
+            --space-black: #030508;
             --tower-white: #f4f5f6;
             --intellect-gold: #e2b865;
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: var(--space-black);
             color: var(--tower-white);
             font-family: 'Times New Roman', 'Noto Serif JP', serif;
             overflow: hidden;
-            -webkit-user-select: none;
-            user-select: none;
+            -webkit-user-select: none; user-select: none;
         }
 
-        /* パーティクルを描写する宇宙のキャンバス */
-        #particleCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background: radial-gradient(circle at 50% 50%, #0a0f14, #05070a 70%);
+        #cosmicCanvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; background: radial-gradient(circle at 50% 50%, #070f1a, #030508 80%);
             pointer-events: none;
         }
 
-        /* 閣下の思想を表示する前景コンテナ */
         .main-gate {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            background: rgba(5, 7, 10, 0.2);
+            position: relative; z-index: 10;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 100%; text-align: center; padding: 20px; box-sizing: border-box;
         }
 
         .title-text {
-            color: var(--intellect-gold);
-            letter-spacing: 0.6rem;
-            font-size: 2.5rem;
-            margin: 0 0 15px 0;
-            text-shadow: 0 0 20px rgba(226, 184, 101, 0.4);
+            color: var(--intellect-gold); letter-spacing: 0.6rem; font-size: 2.8rem; margin: 0 0 15px 0;
+            text-shadow: 0 0 25px rgba(226, 184, 101, 0.5);
         }
 
         .subtitle-text {
-            font-size: 1.1rem;
-            letter-spacing: 0.25rem;
-            color: var(--tower-white);
-            opacity: 0.85;
-            margin: 0;
+            font-size: 1.15rem; letter-spacing: 0.25rem; color: var(--tower-white); opacity: 0.9; margin: 0;
         }
     </style>
 </head>
 <body>
 
-    <!-- 粒子（パーティクル）が躍動する空間層 -->
-    <canvas id="particleCanvas"></canvas>
+    <!-- 閣下の指先と連動してネオンレインボーが煌めく星海キャンバス -->
+    <canvas id="cosmicCanvas"></canvas>
 
-    <!-- 前景：洗練されたロゴと宣告 -->
     <div class="main-gate">
         <h1 class="title-text">rayna.space</h1>
         <p class="subtitle-text">時空の歪みは修正され、秩序は復元せり。</p>
     </div>
 
     <script>
-        const canvas = document.getElementById("particleCanvas");
+        const canvas = document.getElementById("cosmicCanvas");
         const ctx = canvas.getContext("2d");
 
-        let particles = [];
-        const particleCount = 60; // Vercel制限を考慮した最適粒子数
+        let bgStars = [];      // すっきりとした白色の星々
+        let comets = [];       // レインボー彗星
+        let clickParticles = []; // タップ・ポインター連動のキラキラ粒子
 
-        // 画面サイズにキャンバスを完全同期
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener("resize", resize);
+        resize();
+
+        // 1. 初期配置：すっきりとした白色の背景星
+        for(let i=0; i<80; i++) {
+            bgStars.push({
+                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                size: Math.random() * 1.5 + 0.5, alpha: Math.random(), speed: Math.random() * 0.02 + 0.005
+            });
         }
-        window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
 
-        // 宇宙の光の粒子（パーティクル）オブジェクトの生成
-        class Particle {
-            constructor() {
-                this.reset();
-                this.y = Math.random() * canvas.height; // 初回は画面全体に分散
+        // 2. マウス移動＆指先タップイベントの検知
+        function triggerSparkle(ex, ey) {
+            // タップされた瞬間にネオンレインボー（HSLカラー）のキラキラ粒子を生成
+            for(let i=0; i<8; i++) {
+                clickParticles.push({
+                    x: ex, y: ey,
+                    size: Math.random() * 3 + 1,
+                    vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4,
+                    hue: Math.random() * 360, // 完全なるネオンレインボーの色彩
+                    alpha: 1, decay: Math.random() * 0.03 + 0.01
+                });
+            }
+        }
+
+        window.addEventListener("mousemove", (e) => { triggerSparkle(e.clientX, e.clientY); });
+        window.addEventListener("touchmove", (e) => { triggerSparkle(e.touches[0].clientX, e.touches[0].clientY); });
+        window.addEventListener("click", (e) => { triggerSparkle(e.clientX, e.clientY); });
+
+        // 3. 定期的に彗星（コメット）を投入
+        function spawnComet() {
+            if(comets.length < 2 && Math.random() < 0.01) {
+                comets.push({
+                    x: Math.random() * canvas.width, y: -20,
+                    vx: Math.random() * 4 + 2, vy: Math.random() * 4 + 2,
+                    length: Math.random() * 80 + 40, alpha: 1
+                });
+            }
+        }
+
+        function animate() {
+            // 残像をすっきりさせるため、不気味なフェードを排して冷徹にクリア
+            ctx.fillStyle = "rgba(3, 5, 8, 0.2)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // A. 白色の星々の瞬き
+            ctx.fillStyle = "#ffffff";
+            bgStars.forEach(star => {
+                star.alpha += star.speed;
+                if(star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+                ctx.globalAlpha = Math.max(0.2, star.alpha);
+                ctx.beginPath(); ctx.arc(star.x, star.y, star.size, 0, Math.PI*2); ctx.fill();
+            });
+            ctx.globalAlpha = 1.0;
+
+            // B. 彗星（流星）の挙動
+            spawnComet();
+            for(let i = comets.length - 1; i >= 0; i--) {
+                let c = comets[i];
+                c.x += c.vx; c.y += c.vy;
+                
+                // 彗星の軌跡をすっきりとした白のネオン調で描写
+                let grad = ctx.createLinearGradient(c.x, c.y, c.x - c.length, c.y - c.length);
+                grad.addColorStop(0, "rgba(255, 255, 255, 0.8)");
+                grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+                ctx.strokeStyle = grad; ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(c.x - c.length, c.y - c.length); ctx.stroke();
+
+                if(c.x > canvas.width + 100 || c.y > canvas.height + 100) { comets.splice(i, 1); }
             }
 
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = canvas.height + 10; // 画面下から湧き上がる
-                this.size = Math.random() * 1.8 + 0.2; // 繊細な星屑のサイズ
-                this.speedY = -(Math.random() * 0.4 + 0.1); // 静かに上昇する波動
-                this.opacity = Math.random() * 0.6 + 0.2;
-                this.fade = Math.random() * 0.005 + 0.002;
-            }
+            // C. ポクター＆指先タップ連動のキラキラ（ネオンレインボー粒子）
+            for(let i = clickParticles.length - 1; i >= 0; i--) {
+                let p = clickParticles[i];
+                p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
 
-            update() {
-                this.y += this.speedY;
-                // 画面上部に行くか、完全に消えたらリセット
-                if (this.y < -10 || this.opacity <= 0) {
-                    this.reset();
+                if(p.alpha <= 0) {
+                    clickParticles.splice(i, 1);
+                } else {
+                    ctx.save();
+                    ctx.globalAlpha = p.alpha;
+                    // HSLカラーによって、すっきり鮮やかなネオンレインボーの煌めきを完全表現
+                    ctx.fillStyle = `hsl(${p.hue}, 100%, 70%)`;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = `hsl(${p.hue}, 100%, 70%)`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.restore();
                 }
             }
 
-            draw() {
-                ctx.fillStyle = `rgba(226, 184, 101, ${this.opacity})`; // 閣下の知性を表す金色粒子
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        // 粒子の初期配備
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
-
-        // 宇宙の時間を駆動させる無限ループ
-        function animate() {
-            // わずかに前の描画を残すことで幽玄な残像（トレイル）を生む
-            ctx.fillStyle = "rgba(5, 7, 10, 0.08)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
             requestAnimationFrame(animate);
         }
         animate();
